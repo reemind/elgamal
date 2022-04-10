@@ -31,43 +31,18 @@ public class LegalEncryptionBenchmark
         4096
     };
 
-    [IterationSetup(Target = nameof(LegalEncryption))]
-    public void EncryptionSetup()
-    {
-        _params = ElgamalParameters.Generate(BitCount);
-        _keys = ElgamalKey.GenerateKeyPair(_params);
-    }
-
     [Benchmark]
     [MinIterationCount(5)]
     public bool LegalEncryption()
     {
-        var encrypted = Elgamal.Encrypt(MessageBytes, _keys.PublicKey);
-        var decrypted = Elgamal.Decrypt(encrypted, _keys.PrivateKey);
+        var @params = ElgamalParameters.Generate(BitCount);
+        var keys = ElgamalKey.GenerateKeyPair(@params);
+
+        var encrypted = Elgamal.Encrypt(MessageBytes, keys.PublicKey);
+        var decrypted = Elgamal.Decrypt(encrypted, keys.PrivateKey);
 
         var decryptedMessage = Encoding.UTF8.GetString(decrypted)[..^1];
 
         return decryptedMessage != Message;
-    }
-
-    [IterationSetup(Target = nameof(KeyGeneration))]
-    public void KeyGenerationSetup()
-    {
-        _params = ElgamalParameters.Generate(BitCount);
-    }
-
-    [Benchmark]
-    [MinIterationCount(5)]
-    public void KeyGeneration()
-    {
-        var @params = ElgamalParameters.Generate(BitCount);
-        _ = ElgamalKey.GenerateKeyPair(@params);
-    }
-
-    [Benchmark]
-    [MinIterationCount(5)]
-    public void ParamsGeneration()
-    {
-        _ = ElgamalParameters.Generate(BitCount);
     }
 }
