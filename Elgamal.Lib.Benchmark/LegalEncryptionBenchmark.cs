@@ -60,8 +60,7 @@ public class LegalEncryptionBenchmark
     [MinIterationCount(5)]
     public void KeyGeneration()
     {
-        var @params = ElgamalParameters.Generate(BitCount);
-        _ = ElgamalKey.GenerateKeyPair(@params);
+        _ = ElgamalKey.GenerateKeyPair(_params);
     }
 
     [Benchmark]
